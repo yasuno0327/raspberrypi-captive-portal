@@ -1,0 +1,34 @@
+# interfaces(5) file used by ifup(8) and ifdown(8)
+
+# Please note that this file is written to be used with dhcpcd
+# For static IP, consult /etc/dhcpcd.conf and 'man dhcpcd.conf'
+
+# Include files from /etc/network/interfaces.d:
+source-directory /etc/network/interfaces.d
+
+# default
+## loopback
+## auto起動時(ifup -a)にループバックインターフェイスを起動
+auto lo 
+## loはloopbackメソッドを利用する
+iface lo inet loopback
+
+## eth0(インターネット接続用)
+## eth0はインターネット接続をするためdhcpで設定
+iface eth0 inet dhcp
+allow-hotplug eth0
+
+## usb0(macからのusb接続用 sshする際に利用する)
+iface usb0 inet manual
+allow-hotplug usb0
+
+## wlan(wifi親機の設定用)
+## wlan0を手動設定
+iface wlan0 inet manual
+wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
+## システム起動時にwlan0を自動起動する
+allow-hotplug wlan0
+
+## 未定義のインターフェイスはこれが使われる
+iface default inet dhcp
+
