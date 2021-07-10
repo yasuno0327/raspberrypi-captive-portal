@@ -1,0 +1,21 @@
+# interfaces(5) file used by ifup(8) and ifdown(8)
+
+# Please note that this file is written to be used with dhcpcd
+# For static IP, consult /etc/dhcpcd.conf and 'man dhcpcd.conf'
+
+# Include files from /etc/network/interfaces.d:
+source-directory /etc/network/interfaces.d
+
+# default
+iface default inet dhcp # 未定義のインターフェイスはこれが使われる
+## loopback
+auto lo # auto起動時(ifup -a)にループバックインターフェイスを起動
+iface lo inet loopback # loはloopbackメソッドを利用する
+
+## eth0(インターネット接続用)
+iface eth0 inet manual # eth0は手動設定(dhcpcd.confで設定する)
+
+## usb0(macからのusb接続用 sshする際に利用する)
+iface usb0 inet manual
+        allow-hotplug
+"/etc/network/interfaces" [readonly] 25L, 953C                                                                                                                                                                                                                13,1          Top
