@@ -10,7 +10,6 @@ const IFace = "wlan0"
 const SshDeviceIp = "192.168.2.2"
 
 func main() {
-  // err := exec.Command("iptables", "-A", "FORWARD", "-i", )
   portalIp, err := getPrivateIp(IFace)
   if err != nil {
     panic(err.Error())
