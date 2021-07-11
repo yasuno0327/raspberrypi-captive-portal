@@ -7,6 +7,7 @@ import (
   "net/http"
   "html/template"
   "strings"
+  "fmt"
 )
 
 const PortalPort = "80"
@@ -65,6 +66,16 @@ func InitTables(portalIp string, ifaceName string) error {
   if err := exec.Command("iptables", "-A", "FORWARD", "-i", ifaceName, "-p", "tcp", "--dport", PortalPort, "-d", portalIp, "-j", "ACCEPT").Run(); err != nil {
     return err
   }
+  if err := exec.Command("iptables", "-t", "nat", "-A", "POSTROUTING", "-o", "eth0", "-j", "MASQUERADE").Run(); err != nil {
+    fmt.Println("hoge")
+    return err
+  }
+  if err := exec.Command("iptables", "-A", "FORWARD", "-i", "eth0", "-o", ifaceName, "-m", "state", "--state", "RELATED,ESTABLISHED", "-j", "ACCEPT").Run(); err != nil {
+    return err
+  }
+  if err := exec.Command("iptables", "-A", "FORWARD", "-i", ifaceName, "-o", "eth0", "-j", "ACCEPT").Run(); err != nil {
+    return err
+  }
   // その他のトラフィックはブロック
   if err := exec.Command("iptables", "-A", "FORWARD", "-i", ifaceName, "-j", "DROP").Run(); err != nil {
     return err
@@ -111,7 +122,6 @@ func handleApprove(w http.ResponseWriter, r *http.Request) {
 }
 
 func allowTrafic(ip string) error {
-  log.Println(ip)
   if err := exec.Command("iptables", "-t", "nat", "-I", "PREROUTING", "1", "-s", ip, "-j", "ACCEPT").Run(); err != nil {
     return err
   }
