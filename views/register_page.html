@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8">
+  <title>Captive Portal test</title>
+  <meta name="description" content="Captive Portal demo">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/static/css/normalize.css">
+  <link rel="stylesheet" href="/static/css/skeleton.css">
+  <link rel="stylesheet" href="/static/css/captiveportal.css">
+
+</head>
+<body>
+
+  <div class="container">
+    <noscript>
+      <div class="row">
+        <div class="six columns msgbox msgbox-error" style="margin-top: 2%;">
+          <h1> 楊野家のテストフリーwifi </h1>
+        </div>
+      </div>
+    </noscript>
+
+    <div class="row">
+      <div class="six columns" style="margin-top: 10%">
+        <h1>楊野家のフリーwifi</h1>
+        <h4>注意事項</h4>
+
+        <p>
+          このWifiはCaptivePortalのテスト用に構築したものです。<br />
+          テストが終了次第削除されます。 <br />
+        </p>
+
+        <p>
+          このネットワークはテスト用にパケットを覗く事があるため、利用しないことをおすすめします。
+        </p>
+      </div>
+    </div>
+
+    <form id="approveForm" action="http://192.168.0.1/approve" method="post">
+      <div class="row">
+        <div id="error-box" class="five columns msgbox msgbox-error">
+        </div>
+				<div id="statusDiv">
+				</div>
+      </div>
+
+      <div id="form-row" class="row">
+        <div class="four columns">
+          <label>
+            <input type="checkbox" id="approveCheckbox" name="isApproved" required> I approve this user agreement
+          </label>
+        </div>
+        <div id="approveButtonDiv" class="one column u-pull-left">
+          <label>
+            <button class="button-primary" id="approveButton" type="submit">Approve</button>
+            <!--<input id="approveButton" class="button-primary" value="Approve" type="submit">-->
+          </label>
+        </div>
+      </div>
+    </form>
+
+  </div>
+  <script src="/static/js/jquery-1.12.2.min.js"></script>
+  <script src="/static/js/captiveportal.js"></script>
+</body>
+</html>

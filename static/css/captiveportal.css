@@ -1,0 +1,24 @@
+.button-loading {
+  background: #80c8ff url('/static/images/loader.gif') no-repeat 80% 80%;
+  cursor: default;
+}
+
+#approveButtonDiv img {
+  height: 100px;
+  width: 100px;
+}
+
+.msgbox {
+	border: 1px solid;
+	margin: 10px 0px;
+	padding:15px 10px 15px 25px;
+}
+
+.msgbox-error {
+	color: #D8000C;
+	background-color: #FFBABA;
+}
+
+#error-box {
+	display:none;
+}
