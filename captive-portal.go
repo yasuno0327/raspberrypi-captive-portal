@@ -6,6 +6,7 @@ import (
   "log"
   "net/http"
   "html/template"
+  "strings"
 )
 
 const PortalPort = "80"
@@ -28,7 +29,7 @@ func main() {
   // captive portalのwebページを起動
   http.Handle("/static", http.StripPrefix("/static", http.FileServer(http.Dir("static/"))))
   http.HandleFunc("/", handleRegister)
-	http.HandleFunc("/accept", handleApprove)
+	http.HandleFunc("/approve", handleApprove)
   http.ListenAndServe(":" + PortalPort, nil)
 }
 
@@ -87,5 +88,38 @@ func handleRegister(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleApprove(w http.ResponseWriter, r *http.Request) {
+  r.ParseForm()
+  approved := strings.Compare(r.FormValue("isApproved"), "on") == 0
+  if approved {
+    clientIp, _, err := net.SplitHostPort(r.RemoteAddr)
+    if err != nil {
+      log.Fatalf("failed to parse ip of %v", r.RemoteAddr)
+      return
+    }
+    if err := allowTrafic(clientIp); err != nil {
+      log.Fatalf("failed to allow traffic from %v. error: %v", clientIp, err)
+      return
+    }
+  }
+  t, err := template.ParseFiles("views/connected.html")
+  if err != nil {
+    log.Fatalf("template error: %v", err)
+  }
+  if err := t.Execute(w, nil); err != nil {
+    log.Fatalf("failed to execute template: %v", err)
+  }
+}
 
+func allowTrafic(ip string) error {
+  log.Println(ip)
+  if err := exec.Command("iptables", "-t", "nat", "-I", "PREROUTING", "1", "-s", ip, "-j", "ACCEPT").Run(); err != nil {
+    return err
+  }
+  if err := exec.Command("iptables", "-I", "FORWARD", "-s", ip, "-j", "ACCEPT").Run(); err != nil {
+    return err
+  }
+  if err := exec.Command("iptables", "-I", "INPUT", "-s", ip, "-j", "ACCEPT").Run(); err != nil {
+    return err
+  }
+  return nil
 }
