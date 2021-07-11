@@ -38,8 +38,8 @@ func InitTables(portalIp string, ifaceName string) error {
   if err := exec.Command("iptables", "-t", "nat", "-F").Run(); err != nil {
     return err
   }
-  // ラズパイへのsshを許可
-  if err := exec.Command("iptables", "-A", "INPUT", "-p", "tcp", "--dport", "ssh", "-s", SshDeviceIp, "-j", "ACCEPT").Run(); err != nil {
+  // macからラズパイへのsshを許可
+  if err := exec.Command("iptables", "-A", "INPUT", "-i", "usb0", "-p", "tcp", "--dport", "ssh", "-s", SshDeviceIp, "-j", "ACCEPT").Run(); err != nil {
     return err
   }
   // TCPでのDNSリクエストを許可する
