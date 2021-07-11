@@ -10,15 +10,19 @@ const IFace = "wlan0"
 const SshDeviceIp = "192.168.2.2"
 
 func main() {
+  // 指定したinterfaceのipを取得
   portalIp, err := getPrivateIp(IFace)
   if err != nil {
     panic(err.Error())
   }
 
+  // iptablesを初期化
   err = InitTables(portalIp, IFace)
   if err != nil {
     panic(err.Error())
   }
+
+  // captive portalのwebページを起動
 
 }
 

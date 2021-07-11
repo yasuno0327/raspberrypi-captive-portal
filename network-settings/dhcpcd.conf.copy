@@ -34,10 +34,7 @@ slaac private
 #fallback static_eth0
 
 interface usb0
-static ip_address=192.167.0.10/24
-static routers=192.167.0.1
-static domain_name_servers=192.167.0.1
-
-interface wlan0
-static ip_address=192.167.0.20/24
+static ip_address=192.168.0.10/16
+static routers=192.168.0.1
+static domain_name_servers=192.168.0.1
 

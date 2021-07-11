@@ -1,0 +1,17 @@
+interface=wlan0
+driver=nl80211
+ssid=YASUNOKE_NO_TEST_FREE_WIFI
+hw_mode=g
+channel=8
+wmm_enabled=1
+macaddr_acl=0
+ieee80211n=1
+ht_capab=[HT40-][HT40+][SHORT-GI-20][SHORT-GI-40]
+ieee80211ac=0
+vht_capab=
+ieee80211d=1
+country_code=JP
+ieee80211h=1
+local_pwr_constraint=3
+spectrum_mgmt_required=1
+auth_algs=1

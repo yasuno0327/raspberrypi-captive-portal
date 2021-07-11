@@ -9,7 +9,7 @@ source-directory /etc/network/interfaces.d
 # default
 ## loopback
 ## auto起動時(ifup -a)にループバックインターフェイスを起動
-auto lo 
+auto lo
 ## loはloopbackメソッドを利用する
 iface lo inet loopback
 
@@ -24,8 +24,11 @@ allow-hotplug usb0
 
 ## wlan(wifi親機の設定用)
 ## wlan0を手動設定
-iface wlan0 inet manual
-wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
+## dhcpcd.confに書くとisc-dhcp-server上でうまく読み取られないのでこちらに書く
+iface wlan0 inet static
+address 192.168.0.1
+netmask 255.255.0.0
+
 ## システム起動時にwlan0を自動起動する
 allow-hotplug wlan0
 
