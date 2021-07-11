@@ -3,7 +3,6 @@ package main
 import (
   "os/exec"
   "net"
-  "fmt"
 )
 
 const PortalPort = "80"
@@ -34,20 +33,36 @@ func getPrivateIp(ifaceName string) (string, error) {
 
 func InitTables(portalIp string, ifaceName string) error {
   // nat, filterテーブルのルールをクリア
-  err := exec.Command("iptables", "-F").Run()
-  err = exec.Command("iptables", "-t", "nat", "-F").Run()
+  if err := exec.Command("iptables", "-F").Run(); err != nil {
+    return err
+  }
+  if err := exec.Command("iptables", "-t", "nat", "-F").Run(); err != nil {
+    return err
+  }
   // ラズパイへのsshを許可
-  err = exec.Command("iptables", "-A", "INPUT", "-p", "tcp", "--dport", "ssh", "-s", SshDeviceIp, "-j", "ACCEPT").Run()
+  if err := exec.Command("iptables", "-A", "INPUT", "-p", "tcp", "--dport", "ssh", "-s", SshDeviceIp, "-j", "ACCEPT").Run(); err != nil {
+    return err
+  }
   // TCPでのDNSリクエストを許可する
-  err = exec.Command("iptables", "-A", "FORWARD", "-i", ifaceName, "-p", "tcp", "--dport", "53", "-j", "ACCEPT").Run()
+  if err := exec.Command("iptables", "-A", "FORWARD", "-i", ifaceName, "-p", "tcp", "--dport", "53", "-j", "ACCEPT").Run(); err != nil {
+    return err
+  }
   // UDPでのDNSリクエストを許可する
-  err = exec.Command("iptables", "-A", "FORWARD", "-i", ifaceName, "-p", "udp", "--dport", "53", "-j", "ACCEPT").Run()
+  if err := exec.Command("iptables", "-A", "FORWARD", "-i", ifaceName, "-p", "udp", "--dport", "53", "-j", "ACCEPT").Run(); err != nil {
+    return err
+  }
   // Captive Portalのwebサーバーへのアクセスを許可する
-  err = exec.Command("iptables", "-A", "FORWARD", "-i", ifaceName, "-p", "tcp", "--dport", PortalPort, "-d", portalIp, "-j", "ACCEPT").Run()
+  if err := exec.Command("iptables", "-A", "FORWARD", "-i", ifaceName, "-p", "tcp", "--dport", PortalPort, "-d", portalIp, "-j", "ACCEPT").Run(); err != nil {
+    return err
+  }
   // その他のトラフィックはブロック
-  err = exec.Command("iptables", "-A", "FORWARD", "-i", ifaceName, "-j", "DROP").Run()
+  if err := exec.Command("iptables", "-A", "FORWARD", "-i", ifaceName, "-j", "DROP").Run(); err != nil {
+    return err
+  }
   // HTTPでのトラフィックをCaptivePortalのwebサーバーへリダイレクトする
   portalServer := portalIp + ":" + PortalPort
-  err = exec.Command("iptables", "-t", "nat", "-A", "PREROUTING", "-i", ifaceName, "-p", "tcp", "--dport", PortalPort, "-j", "DNAT", "--to-destination", portalServer).Run()
-  return err
+  if err := exec.Command("iptables", "-t", "nat", "-A", "PREROUTING", "-i", ifaceName, "-p", "tcp", "--dport", PortalPort, "-j", "DNAT", "--to-destination", portalServer).Run(); err != nil {
+    return err
+  }
+  return nil
 }
