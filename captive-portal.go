@@ -3,6 +3,9 @@ package main
 import (
   "os/exec"
   "net"
+  "log"
+  "net/http"
+  "html/template"
 )
 
 const PortalPort = "80"
@@ -23,7 +26,10 @@ func main() {
   }
 
   // captive portalのwebページを起動
-
+  http.Handle("/static", http.StripPrefix("/static", http.FileServer(http.Dir("static/"))))
+  http.HandleFunc("/", handleRegister)
+	http.HandleFunc("/accept", handleApprove)
+  http.ListenAndServe(":" + PortalPort, nil)
 }
 
 func getPrivateIp(ifaceName string) (string, error) {
@@ -68,4 +74,18 @@ func InitTables(portalIp string, ifaceName string) error {
     return err
   }
   return nil
+}
+
+func handleRegister(w http.ResponseWriter, r *http.Request) {
+  t, err := template.ParseFiles("views/register_page.html")
+  if err != nil {
+    log.Fatalf("template error: %v", err)
+  }
+  if err := t.Execute(w, nil); err != nil {
+    log.Fatalf("failed to execute template: %v", err)
+  }
+}
+
+func handleApprove(w http.ResponseWriter, r *http.Request) {
+
 }
