@@ -30,7 +30,7 @@ func main() {
   // captive portalのwebページを起動
   http.Handle("/static", http.StripPrefix("/static", http.FileServer(http.Dir("static/"))))
   http.HandleFunc("/", handleRegister)
-	http.HandleFunc("/approve", handleApprove)
+  http.HandleFunc("/approve", handleApprove)
   http.ListenAndServe(":" + PortalPort, nil)
 }
 
