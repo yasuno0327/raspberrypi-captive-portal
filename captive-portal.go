@@ -36,9 +36,18 @@ func main() {
 
 func getPrivateIp(ifaceName string) (string, error) {
   iface, err := net.InterfaceByName(ifaceName)
+  if err != nil {
+    return "", err
+  }
   addrs, err := iface.Addrs()
+  if err != nil {
+    return "", err
+  }
   addressWithCidr := addrs[0].String()
   ip, _, err := net.ParseCIDR(addressWithCidr)
+  if err != nil {
+    return "", err
+  }
   return ip.To4().String(), err
 }
 
