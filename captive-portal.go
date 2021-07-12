@@ -50,8 +50,8 @@ func InitTables(portalIp string, ifaceName string) error {
   if err := exec.Command("iptables", "-t", "nat", "-F").Run(); err != nil {
     return err
   }
-  // macからラズパイへのsshを許可
-  if err := exec.Command("iptables", "-A", "INPUT", "-i", "usb0", "-p", "tcp", "--dport", "ssh", "-s", SshDeviceIp, "-j", "ACCEPT").Run(); err != nil {
+  // 許可していないFORWARDトラフィックはブロックする
+  if err := exec.Command("iptables", "-P", "FORWARD", "DROP").Run(); err != nil {
     return err
   }
   // TCPでのDNSリクエストを許可する
@@ -74,10 +74,6 @@ func InitTables(portalIp string, ifaceName string) error {
     return err
   }
   if err := exec.Command("iptables", "-A", "FORWARD", "-i", ifaceName, "-o", "eth0", "-j", "ACCEPT").Run(); err != nil {
-    return err
-  }
-  // その他のトラフィックはブロック
-  if err := exec.Command("iptables", "-A", "FORWARD", "-i", ifaceName, "-j", "DROP").Run(); err != nil {
     return err
   }
   // HTTPでのトラフィックをCaptivePortalのwebサーバーへリダイレクトする
